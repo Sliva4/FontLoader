@@ -7,14 +7,14 @@ plugins {
 }
 
 android {
-    compileSdk 35
+    compileSdk 36
     namespace "rikka.fontloader"
     defaultConfig {
         applicationId "rikka.fontloader"
         minSdk 31
-        targetSdk 35
-        versionCode 1
-        versionName "1.0"
+        targetSdk 36
+        versionCode moduleVersionCode
+        versionName moduleVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
