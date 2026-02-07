@@ -46,12 +46,12 @@ static void HideFromMaps(const std::vector<std::string> &fonts) {
 
         if (std::find(fonts.begin(), fonts.end(), pathname) == fonts.end()) continue;
 
-        auto start = reinterpret_cast<uintptr_t>(i->addr_start);
+        void* start = (void*) reinterpret_cast<uintptr_t>(i->addr_start);
         auto end = reinterpret_cast<uintptr_t>(i->addr_end);
         if (end <= start) continue;
-        auto len = end - start;
+        size_t len = end - start;
         if (munmap(start, len) == -1) {
-                LOGW"munmap failed for [%p, %p]", start, end);
+                LOGW("munmap failed for [%p, %p]", start, end);
         }
     }
 }
