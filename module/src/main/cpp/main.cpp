@@ -50,21 +50,9 @@ static void HideFromMaps(const std::vector<std::string> &fonts) {
         auto end = reinterpret_cast<uintptr_t>(i->addr_end);
         if (end <= start) continue;
         auto len = end - start;
-        auto *bk = mmap(nullptr, len, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE,
-                        -1, 0);
-        if (bk == MAP_FAILED) continue;
-        auto old_prot = GetProt(i);
-        if (!i->is_r && mprotect(i->addr_start, len, old_prot | PROT_READ) != 0) {
-            PLOGE("Failed to hide %*s from maps", static_cast<int>(pathname.size()),
-                  pathname.data());
-            continue;
+        if (munmap(start, len) == MAP_FAILED) {
+                LOGE("munmap failed for [%p, %p]", start, end);
         }
-        memcpy(bk, i->addr_start, len);
-        mremap(bk, len, len, MREMAP_FIXED | MREMAP_MAYMOVE, i->addr_start);
-        mprotect(i->addr_start, len, old_prot);
-
-        LOGV("Hide %*s from maps", static_cast<int>(pathname.size()), pathname.data());
-    }
 }
 
 static void PreloadFonts(JNIEnv *env, const std::vector<std::string> &fonts) {
@@ -97,6 +85,7 @@ public:
     void preAppSpecialize(AppSpecializeArgs *args) override {
         InitCompanion();
         PreloadFonts(env, fonts);
+        HideFromMaps(fonts);
 
         api->setOption(zygisk::Option::DLCLOSE_MODULE_LIBRARY);
     }
