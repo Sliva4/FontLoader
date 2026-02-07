@@ -53,6 +53,7 @@ static void HideFromMaps(const std::vector<std::string> &fonts) {
         if (munmap(start, len) == MAP_FAILED) {
                 LOGE("munmap failed for [%p, %p]", start, end);
         }
+    }
 }
 
 static void PreloadFonts(JNIEnv *env, const std::vector<std::string> &fonts) {
