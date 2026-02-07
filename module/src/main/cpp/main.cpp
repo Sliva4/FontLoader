@@ -48,8 +48,8 @@ static void HideFromMaps(const std::vector<std::string> &fonts) {
 
         void* start = (void*) reinterpret_cast<uintptr_t>(i->addr_start);
         auto end = reinterpret_cast<uintptr_t>(i->addr_end);
-        if (end <= start) continue;
-        size_t len = end - start;
+        if (end <= reinterpret_cast<uintptr_t>(i->addr_start)) continue;
+        size_t len = end - reinterpret_cast<uintptr_t>(i->addr_start);
         if (munmap(start, len) == -1) {
                 //LOGW("munmap failed for [%p, %p]", start, end);
         }
